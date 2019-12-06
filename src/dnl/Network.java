@@ -200,6 +200,40 @@ public class Network
     }
     
     /**
+     * This method resets the network to prepare for the next dynamic network loading.
+     */
+    public void reset()
+    {
+        Params.time = 0;
+        
+        for(Node n : nodes)
+        {
+            n.reset();
+        }
+        
+        for(Link l : links)
+        {
+            l.reset();
+        }
+    }
+    
+    /**
+     * @return the {@link Link} between the given {@link Node}s, or null if none exists.
+     */
+    public Link getLink(Node i, Node j)
+    {
+        for(Link l : i.getOutgoing())
+        {
+            if(l.getDest() == j)
+            {
+                return l;
+            }
+        }
+        return null;
+    }
+    
+    
+    /**
      * This method simulates traffic flow from the current time to {@link Params#DURATION}. 
      * It calls {@link Network#nextTimestep()} for each time step.
      */
