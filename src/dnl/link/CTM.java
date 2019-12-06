@@ -75,4 +75,9 @@ public class CTM extends Link
     {
         // fill this in
     }
+    
+    public double getFFTime()
+    {
+        return cells.length * Params.dt;
+    }
 }
