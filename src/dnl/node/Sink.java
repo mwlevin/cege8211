@@ -22,6 +22,11 @@ public class Sink extends Node
         super(id, longitude, latitude, elevation);
     }
     
+    public void reset()
+    {
+        exiting = 0;
+    }
+    
     public void step()
     {
         exiting = 0;

@@ -20,6 +20,11 @@ public class Series extends Node
         super(id, longitude, latitude, elevation);
     }
     
+    public void reset()
+    {
+        // nothing to do here
+    }
+    
     
     public void step()
     {

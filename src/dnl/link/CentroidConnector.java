@@ -27,6 +27,11 @@ public class CentroidConnector extends Link
         super(id, source, dest, 1, 60, 100000, 1);
     }
     
+    public void reset()
+    {
+        n = 0;
+    }
+    
     public double getOccupancy()
     {
         return n;
@@ -63,6 +68,7 @@ public class CentroidConnector extends Link
     {
         // add y to the occupancy for the next time step
         total_y += y;
+        logEnteringFlow(y);
     }
     
     public void removeFlow(double y)

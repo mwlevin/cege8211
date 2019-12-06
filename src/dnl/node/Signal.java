@@ -41,6 +41,11 @@ public class Signal extends Node
     }
     
     
+    public void reset()
+    {
+        // fill this in
+    }
+    
     /**
      * Use a diverge node to model outgoing flow for each approach.
      */

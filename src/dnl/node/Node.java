@@ -72,6 +72,12 @@ public abstract class Node implements Comparable<Node>
     
     
     /**
+     * Resets this {@link Node} to start a new dynamic network loading
+     */
+    public abstract void reset();
+
+    
+    /**
      * @return the elevation (in ft)
      */
     public double getElevation()

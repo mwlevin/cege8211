@@ -20,6 +20,11 @@ public class Diverge extends Node
         super(id, longitude, latitude, elevation);
     }
     
+    public void reset()
+    {
+        // fill this in
+    }
+    
     public void step()
     {
         // fill this in

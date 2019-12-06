@@ -35,9 +35,14 @@ public class Source extends Node
         demand_rates = new HashMap<>();
     }
     
+    public void reset()
+    {
+        // nothing to do here
+    }
+    
     /**
      * This is used to add demand to the source. 
-     * It is typically called in {@link ReadNetwork} when constructing the {@link Network}.
+     * It is typically called in {@link dnl.ReadNetwork} when constructing the {@link dnl.Network}.
      */
     public void addDemand(double start_time, double end_time, double demand)
     {
@@ -54,8 +59,8 @@ public class Source extends Node
     }
     
     /**
-     * This method is called every time step by {@link Network.newTimestep()}.
-     * Since this is a source node, it adds the exogenous amount of demand to the network - to the appropriate {@link CentroidConnector}. 
+     * This method is called every time step by {@link dnl.Network#nextTimestep()}.
+     * Since this is a source node, it adds the exogenous amount of demand to the network - to the appropriate {@link dnl.link.CentroidConnector}. 
      * 
      */
     public void step()
@@ -102,6 +107,7 @@ public class Source extends Node
      */
     Link dummy = new Link(-1, null, null, 0, 0, 0, 0)
     {
+        public void reset(){}
         public void step(){}
         public void update(){}
         public double getSendingFlow(){return 0;}

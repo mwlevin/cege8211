@@ -28,6 +28,11 @@ public class CTM extends Link
         // instantiate cell array here
     }
     
+    public void reset()
+    {
+        // fill this in
+    }
+    
     public double getCellLength()
     {
         return 0.0;

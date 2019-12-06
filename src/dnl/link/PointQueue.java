@@ -24,6 +24,11 @@ public class PointQueue extends Link
     }
     
     
+    public void reset()
+    {
+        // fill this in
+    }
+    
     public double getOccupancy()
     {
         // fill this in

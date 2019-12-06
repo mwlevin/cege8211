@@ -84,6 +84,12 @@ public abstract class Link implements Comparable<Link>
     }
     
     /**
+     * Resets this {@link Link} to start a new dynamic network loading
+     */
+    public abstract void reset();
+
+    
+    /**
      * @return the free flow speed in mi/hr
      */
     public double getFFSpeed()

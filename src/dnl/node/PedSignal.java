@@ -18,19 +18,26 @@ public class PedSignal extends Node
 {
     // change these to modify the green time and red time.
     // I assume that the time step is less than the cycle length.
-    private double green_time = 32;
-    private double red_time = 15;
+    private final double green_time = 32;
+    private final double red_time = 15;
     
     
     
     
     // alternate green and red, then cycle back when needed
-    private double curr_time = 0;
+    private double curr_time;
     private double cycle_length = green_time + red_time;
     
     public PedSignal(int id, double longitude, double latitude, double elevation)
     {
         super(id, longitude, latitude, elevation);
+        
+        curr_time = 0;
+    }
+    
+    public void reset()
+    {
+        curr_time = 0;
     }
     
     public void step()
@@ -71,6 +78,6 @@ public class PedSignal extends Node
     
     public void update()
     {
-        // nothing to do here
+        
     }
 }

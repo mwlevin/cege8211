@@ -25,6 +25,11 @@ public class LTM extends Link
 
     }
     
+    public void reset()
+    {
+        // fill this in
+    }
+    
     
     public double getOccupancy()
     {
