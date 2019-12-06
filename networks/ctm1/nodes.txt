@@ -1,0 +1,5 @@
+id	type	longitude	latitude	elevation
+1	source	1	0	0
+2	series	2	0	0
+3	series	3	0	0
+4	sink	4	0	0

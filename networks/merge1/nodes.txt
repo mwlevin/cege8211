@@ -1,0 +1,5 @@
+id	type	longitude	latitude	elevation
+1	source	1	0	0
+2	source	1	-1	0
+3	merge	2	0	0
+4	sink	3	0	0

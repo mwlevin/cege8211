@@ -1,0 +1,4 @@
+node	start time (s)	end time (s)	rate (vph)
+101	0	60	400
+102	0	60	320
+103	0	60	400
