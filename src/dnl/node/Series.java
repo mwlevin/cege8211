@@ -25,14 +25,13 @@ public class Series extends Node
         // nothing to do here
     }
     
-    
     public void step()
     {
         // move flow from upstream link to downstream link as permitted by sending and receiving flows.
         // if there is more than 1 upstream or downstream link, throw an error - this is not the intersection control you're looking for.
         if(getIncoming().size() != 1 || getOutgoing().size() != 1)
         {
-            throw new RuntimeException("Wrong number of incoming or outgoing links: \nIncoming: "+getIncoming().size()+" Outgoing: "+getOutgoing().size());
+            throw new RuntimeException("Node "+getId()+": Wrong number of incoming or outgoing links: \nIncoming: "+getIncoming().size()+" Outgoing: "+getOutgoing().size());
         }
         
         // upstream link

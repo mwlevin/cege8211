@@ -37,6 +37,7 @@ public abstract class Link implements Comparable<Link>
     
     // travel time information
     private double avgTT;
+    private double totalFlow;
     
     // during each DNL, update total entering flow and total time spent occupying the link.
     private double total_entering;
@@ -46,7 +47,7 @@ public abstract class Link implements Comparable<Link>
     
     /**
      * Constructs a new {@link Link} with the given parameters.
-     * Generally {@link Link}s will be constructed in {@link ReadNetwork}.
+     * Generally {@link Link}s will be constructed in {@link dnl.ReadNetwork}.
      * 
      * Jam density is global and found in {@link Params}
      * Backwards wave speed may or may not be calculated based on these parameters - depends on the flow model.
@@ -87,7 +88,6 @@ public abstract class Link implements Comparable<Link>
      * Resets this {@link Link} to start a new dynamic network loading
      */
     public abstract void reset();
-
     
     /**
      * @return the free flow speed in mi/hr
@@ -111,6 +111,14 @@ public abstract class Link implements Comparable<Link>
     public double getAvgTT()
     {
         return Math.max(avgTT, getFFTime());
+    }
+    
+    /**
+     * @return the total time spent traveling on this link (in s)
+     */
+    public double getTotalTT()
+    {
+        return getAvgTT() * totalFlow;
     }
     
     
@@ -202,7 +210,7 @@ public abstract class Link implements Comparable<Link>
      * Adds the given flow (in veh, for a single time step) to the upstream end of the link.
      * This method is called when vehicles enter the link!
      * This is usually called by the {@link Node#step()} method.
-     * Subclasses of link need to call {@link #logEnteringFlow()} to update the average travel times.
+     * Subclasses of link need to call {@link #logEnteringFlow(double)} to update the average travel times.
      */
     public abstract void addFlow(double y);
     
@@ -210,8 +218,8 @@ public abstract class Link implements Comparable<Link>
     /**
      * This is used to track the total number of vehicles entering this link.
      * The number of vehicles is used to calculate the average travel time.
-     * This method is usually called by {@link #addFlow()}.
-     * Subclasses of {@link Link} should call this method as part of the {@link #addFlow()} method.
+     * This method is usually called by {@link #addFlow(double)}.
+     * Subclasses of {@link Link} should call this method as part of the {@link #addFlow(double)} method.
      */
     public void logEnteringFlow(double y)
     {
@@ -242,6 +250,8 @@ public abstract class Link implements Comparable<Link>
         {
             avgTT = getFFTime();
         }
+        
+        totalFlow = total_entering;
         
         // now reset total_time_occ and total_entering for the next dynamic network loading.
         total_time_occ = 0.0;

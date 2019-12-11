@@ -8,13 +8,16 @@ package dnl;
 import dnl.link.Link;
 import dnl.node.Node;
 import dnl.node.Sink;
+import dnl.node.Source;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
 import java.util.Set;
@@ -34,16 +37,26 @@ public class Network
     private List<Link> links;
     private List<Node> nodes;
     
+    private String name;
+    
     /**
      * Constructs the {@link Network} with the given {@link Node} and {@link Link}.
      * In general, the easiest way to construct a {@link Network} will be to create a new {@link ReadNetwork} instance, then call {@link ReadNetwork#createNetwork(String)} with the name of the network folder.
      */
-    public Network(List<Node> nodes, List<Link> links)
+    public Network(String name, List<Node> nodes, List<Link> links)
     {
         this.nodes = nodes;
         this.links = links;
+        this.name = name;
     }
     
+    /**
+     * @return the name of the network
+     */
+    public String getName()
+    {
+        return name;
+    }
     
     /** 
      * @return the set of all {@link Node}s
@@ -197,6 +210,12 @@ public class Network
         }
         
         fileout.close();
+
+        // calculate the average travel time for each link
+        for(Link l : links)
+        {
+            l.calculateTravelTime();
+        }
     }
     
     /**
@@ -301,10 +320,10 @@ public class Network
     
     
     /**
-     * Runs one-to-all shortest path rooted at the specified origin node.
-     * This method sets the {@link Node} shortest path labels.
+     * Runs one-to-all shortest path rooted at the specified destination node.
+     * This method sets the {@link Node} shortest path labels, {@link Node#cost} and {@link Node#pred}.
      */
-    public void dijkstras(Node origin)
+    public void dijkstras(Node dest)
     {
         // fill this in
     }
@@ -325,7 +344,93 @@ public class Network
      */
     public Path shortestPath(Node origin, Node dest)
     {
-        dijkstras(origin);
+        dijkstras(dest);
         return trace(origin, dest);
+    }
+
+    /**
+     * Assumption: only one destination node exists in this network.
+     * @param num_iterations the number of iterations
+     */
+    public void msa(int num_iterations)
+    {
+        // delete turning proportions
+        for(Node n : nodes)
+        {
+            n.clearTurningProportions();
+        }
+        
+        // find destination node
+        Sink dest = null;
+        for(Node n : nodes)
+        {
+            if(n instanceof Sink)
+            {
+                if(dest != null)
+                {
+                    throw new RuntimeException("DNL is not equipped to handle multiple destinations.");
+                }
+                dest = (Sink)n;
+            }
+        }
+        
+        System.out.println("Iteration\tGap");
+        
+        for(int iteration = 1; iteration <= num_iterations; iteration++)
+        {
+            double lambda = 1.0/iteration;
+            
+            double gap = msa_iteration(lambda, dest);
+            
+            System.out.println(iteration+"\t"+gap);
+        }
+    }
+    
+    public double msa_iteration(double lambda, Sink dest)
+    {
+        // Find all-or-nothing assignment.
+        
+        // Take lambda-weighted convex combination of all-or-nothing assignment and current assignment.
+        // This involves adjusting the turning proportions at each node. 
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        simulate();
+        reset();
+        
+        return calculateGap(dest);
+    }
+    
+    public double calculateGap(Sink dest)
+    {
+        // fill this in
+        return 0.0;
+    }
+    
+    /**
+     * @return the shortest path TSTT possible if travel times are equal to the current shortest paths.
+     */
+    public double getSPTT(Sink dest)
+    {
+        // fill this in
+        return 0.0;
+    }
+    
+    public double getTSTT()
+    {
+        double output = 0.0;
+        
+        for(Link l : links)
+        {
+            output += l.getTotalTT();
+        }
+        
+        return output;
     }
 }

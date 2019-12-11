@@ -22,6 +22,7 @@ import dnl.node.Sink;
 import dnl.node.Source;
 import dnl.node.StopSign;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -65,7 +66,7 @@ public class ReadNetwork
     
     
     
-    
+    private String network_name;
     
     
     private Map<Integer, Node> nodesmap;
@@ -83,12 +84,16 @@ public class ReadNetwork
      * Reads in the network with the given directory.
      * For instance, if given the name "2-link", it will read in the network in the "networks/2-link" folder.
      */
-    public Network createNetwork(String name) throws IOException
+    public Network createNetwork(String name)
     {
+        System.out.println("Creating network "+name);
+        
+        network_name = name;
+        
         nodesmap = new TreeMap<>();
         linksmap = new TreeMap<>();
         
-        
+        readParams(new File("networks/"+name+"/params.txt"));
         readNodes(new File("networks/"+name+"/nodes.txt"));
         readLinks(new File("networks/"+name+"/links.txt"));
         readSignals(new File("networks/"+name+"/signals.txt"), new File("networks/"+name+"/phases.txt"));
@@ -115,7 +120,42 @@ public class ReadNetwork
         nodesmap = null;
         linksmap = null;
         
-        return new Network(nodes, links);
+        return new Network(name, nodes, links);
+    }
+    
+    public void readParams(File params)
+    {
+        try
+        {
+            Scanner filein = new Scanner(params);
+
+            filein.nextLine();
+
+            while(filein.hasNext())
+            {
+                String next = filein.next();
+                double value = filein.nextDouble();
+
+                if(next.equalsIgnoreCase("dt"))
+                {
+                    Params.dt = (int)value;
+                }
+                else if(next.equalsIgnoreCase("duration"))
+                {
+                    Params.DURATION = (int)value;
+                }
+                else if(next.equalsIgnoreCase("jam_density"))
+                {
+                    Params.JAM_DENSITY = value;
+                }
+            }
+
+            filein.close();
+        }
+        catch(FileNotFoundException ex)
+        {
+            System.out.println("\tSkipping file \"networks/"+network_name+"/params.txt\"");
+        }
     }
     
     /**
@@ -205,34 +245,41 @@ public class ReadNetwork
      * Reads all nodes from the specified file.
      * Header data is ignored.
      */
-    public void readNodes(File file) throws IOException
+    public void readNodes(File file)
     {
-        Scanner filein = new Scanner(file);
-        
-        while(!filein.hasNextInt() && filein.hasNextLine())
+        try
         {
-            filein.nextLine();
-        }
-        
-        while(filein.hasNextInt())
-        {
-            int id = filein.nextInt();
-            String type = filein.next();
-            double longitude = filein.nextDouble();
-            double latitude = filein.nextDouble();
-            double elevation = filein.nextDouble();
-            
-            Node node = createNode(id, type, longitude, latitude, elevation);
-            
-            nodesmap.put(node.getId(), node);
-            
-            
-            if(filein.hasNextLine())
+            Scanner filein = new Scanner(file);
+
+            while(!filein.hasNextInt() && filein.hasNextLine())
             {
                 filein.nextLine();
             }
+
+            while(filein.hasNextInt())
+            {
+                int id = filein.nextInt();
+                String type = filein.next();
+                double longitude = filein.nextDouble();
+                double latitude = filein.nextDouble();
+                double elevation = filein.nextDouble();
+
+                Node node = createNode(id, type, longitude, latitude, elevation);
+
+                nodesmap.put(node.getId(), node);
+
+
+                if(filein.hasNextLine())
+                {
+                    filein.nextLine();
+                }
+            }
+            filein.close();
         }
-        filein.close();
+        catch(FileNotFoundException ex)
+        {
+            throw new RuntimeException("Cannot find file \"networks/"+network_name+"/nodes.txt\"");
+        }
     }
     
     
@@ -240,128 +287,148 @@ public class ReadNetwork
      * Reads all links from the specified file.
      * Header data is ignored.
      */
-    public void readLinks(File file) throws IOException
+    public void readLinks(File file)
     {
-        Scanner filein = new Scanner(file);
-        
-        while(!filein.hasNextInt() && filein.hasNextLine())
+        try
         {
-            filein.nextLine();
-        }
-        
-        while(filein.hasNextInt())
-        {
-            int id = filein.nextInt();
-            String type = filein.next();
-            int source_id = filein.nextInt();
-            int dest_id = filein.nextInt();
-            double length = filein.nextDouble();
-            double ffspd = filein.nextDouble();
-            double capacityPerLane = filein.nextDouble();
-            int numLanes = filein.nextInt();
-            
-            Node source = nodesmap.get(source_id);
-            Node dest = nodesmap.get(dest_id);
-            
-            if(source == null)
-            {
-                throw new RuntimeException("Source node not found: "+source_id);
-            }
-            
-            if(dest == null)
-            {
-                throw new RuntimeException("Dest node not found: "+dest_id);
-            }
-            
-            Link link = createLink(id, type, source, dest, length, ffspd, capacityPerLane, numLanes);
-            
-            linksmap.put(link.getId(), link);
-            
-            
-            if(filein.hasNextLine())
+            Scanner filein = new Scanner(file);
+
+            while(!filein.hasNextInt() && filein.hasNextLine())
             {
                 filein.nextLine();
             }
+
+            while(filein.hasNextInt())
+            {
+                int id = filein.nextInt();
+                String type = filein.next();
+                int source_id = filein.nextInt();
+                int dest_id = filein.nextInt();
+                double length = filein.nextDouble();
+                double ffspd = filein.nextDouble();
+                double capacityPerLane = filein.nextDouble();
+                int numLanes = filein.nextInt();
+
+                Node source = nodesmap.get(source_id);
+                Node dest = nodesmap.get(dest_id);
+
+                if(source == null)
+                {
+                    throw new RuntimeException("Source node not found: "+source_id);
+                }
+
+                if(dest == null)
+                {
+                    throw new RuntimeException("Dest node not found: "+dest_id);
+                }
+
+                Link link = createLink(id, type, source, dest, length, ffspd, capacityPerLane, numLanes);
+
+                linksmap.put(link.getId(), link);
+
+
+                if(filein.hasNextLine())
+                {
+                    filein.nextLine();
+                }
+            }
+            filein.close();
         }
-        filein.close();
+        catch(FileNotFoundException ex)
+        {
+            throw new RuntimeException("Cannot find file \"networks/"+network_name+"/links.txt\"");
+        }
     }
 
     /**
      * Reads the demand (incoming vehicles) from the given file
      */
-    public void readDemand(File file) throws IOException
+    public void readDemand(File file)
     {
-        Scanner filein = new Scanner(file);
-        
-        while(!filein.hasNextInt() && filein.hasNextLine())
+        try
         {
-            filein.nextLine();
+            Scanner filein = new Scanner(file);
+
+            while(!filein.hasNextInt() && filein.hasNextLine())
+            {
+                filein.nextLine();
+            }
+
+            while(filein.hasNextInt())
+            {
+                int node_id = filein.nextInt();
+                double start_time = filein.nextDouble();
+                double end_time = filein.nextDouble();
+                double rate = filein.nextDouble();
+
+                Node node = nodesmap.get(node_id);
+
+                if(node == null)
+                {
+                    throw new RuntimeException("Cannot find node "+node_id);
+                }
+
+                if(!(node instanceof Source))
+                {
+                    throw new RuntimeException("Attempting to add demand to non-source node: "+node_id);
+                }
+
+                ((Source)node).addDemand(start_time, end_time, rate);
+            }
         }
-        
-        while(filein.hasNextInt())
+        catch(FileNotFoundException ex)
         {
-            int node_id = filein.nextInt();
-            double start_time = filein.nextDouble();
-            double end_time = filein.nextDouble();
-            double rate = filein.nextDouble();
-            
-            Node node = nodesmap.get(node_id);
-            
-            if(node == null)
-            {
-                throw new RuntimeException("Cannot find node "+node_id);
-            }
-            
-            if(!(node instanceof Source))
-            {
-                throw new RuntimeException("Attempting to add demand to non-source node: "+node_id);
-            }
-            
-            ((Source)node).addDemand(start_time, end_time, rate);
+            throw new RuntimeException("Cannot find file \"networks/"+network_name+"/demand.txt\"");
         }
     }
     
     /** 
      * Reads the turning proportions from the given file.
      */
-    public void readTurningProportions(File file) throws IOException
+    public void readTurningProportions(File file)
     {
-        Scanner filein = new Scanner(file);
-        
-        while(!filein.hasNextInt() && filein.hasNextLine())
+        try
         {
-            filein.nextLine();
-        }
-        
-        while(filein.hasNextInt())
-        {
-            int upstream_id = filein.nextInt();
-            int downstream_id = filein.nextInt();
-            double proportion = filein.nextDouble();
-            
-            Link upstream = linksmap.get(upstream_id);
-            Link downstream = linksmap.get(downstream_id);
-            
-            if(upstream == null && downstream == null)
-            {
-                throw new RuntimeException("Cannot find link pair: upstream: "+upstream_id+" downstream: "+downstream_id);
-            }
-            
-            if(downstream != null)
-            {
-                downstream.getSource().storeTurningProportion(upstream, downstream, proportion);
-            }
-            else
-            {
-                upstream.getDest().storeTurningProportion(upstream, downstream, proportion);
-            }
-            
-            if(filein.hasNextLine())
+            Scanner filein = new Scanner(file);
+
+            while(!filein.hasNextInt() && filein.hasNextLine())
             {
                 filein.nextLine();
             }
+
+            while(filein.hasNextInt())
+            {
+                int upstream_id = filein.nextInt();
+                int downstream_id = filein.nextInt();
+                double proportion = filein.nextDouble();
+
+                Link upstream = linksmap.get(upstream_id);
+                Link downstream = linksmap.get(downstream_id);
+
+                if(upstream == null && downstream == null)
+                {
+                    throw new RuntimeException("Cannot find link pair: upstream: "+upstream_id+" downstream: "+downstream_id);
+                }
+
+                if(downstream != null)
+                {
+                    downstream.getSource().storeTurningProportion(upstream, downstream, proportion);
+                }
+                else
+                {
+                    upstream.getDest().storeTurningProportion(upstream, downstream, proportion);
+                }
+
+                if(filein.hasNextLine())
+                {
+                    filein.nextLine();
+                }
+            }
+            filein.close();
         }
-        filein.close();
+        catch(FileNotFoundException ex){
+            System.out.println("\tSkipping file \"networks/"+network_name+"/turning_proportions.txt\"");
+        }
     }
     
     /**
@@ -369,104 +436,117 @@ public class ReadNetwork
      * Note that signal cycle data will only be stored for nodes that are actual signals. Otherwise, it will be ignored.
      * This method reads two files: first, it looks at signals.txt to calculate the offset. Then, it looks at phases.txt to read signal phases
      */
-    public void readSignals(File signals, File phases) throws IOException
+    public void readSignals(File signals, File phases)
     {
-        Scanner filein = new Scanner(signals);
-        
-        while(!filein.hasNextInt() && filein.hasNextLine())
+        try
         {
-            filein.nextLine();
-        }
-        
-        while(filein.hasNextInt())
-        {
-            int node_id = filein.nextInt();
-            double offset = filein.nextDouble();
-            
-            Node node = nodesmap.get(node_id);
-            
-            if(node == null)
-            {
-                throw new RuntimeException("Cannot find node "+node_id);
-            }
-            
-            if(node instanceof Signal)
-            {
-                ((Signal)node).setOffset(offset);
-            }
-            
-            if(filein.hasNextLine())
+            Scanner filein = new Scanner(signals);
+
+            while(!filein.hasNextInt() && filein.hasNextLine())
             {
                 filein.nextLine();
             }
-        }
-        filein.close();
-        
-        filein = new Scanner(phases);
-        
-        while(!filein.hasNextInt() && filein.hasNextLine())
-        {
-            filein.nextLine();
-        }
-        
-        while(filein.hasNextInt())
-        {
-            int node_id = filein.nextInt();
-            String type = filein.next();
-            int sequence = filein.nextInt();
-            double all_red = filein.nextDouble();
-            double yellow = filein.nextDouble();
-            double green = filein.nextDouble();
-            
-            int num_moves = filein.nextInt();
-            
-            String line = filein.nextLine();
-            
-            // String[] containing ids of incoming links
-            String[] inc_links = line.substring(line.indexOf('{')+1, line.indexOf('}')).split(",");
-            
-            // String[] containing ids of outgoing links
-            line = line.substring(line.indexOf('}')+1);
-            String[] out_links = line.substring(line.indexOf('{')+1, line.indexOf('}')).split(",");
-            
-            // this is a list of protected turning movements
-            List<Link[]> protected_turns = new ArrayList<>();
-            
-            for(int idx = 0; idx < num_moves; idx++)
+
+            while(filein.hasNextInt())
             {
-                int i_id = Integer.parseInt(inc_links[idx].trim());
-                int j_id = Integer.parseInt(out_links[idx].trim());
-                
-                Link i = linksmap.get(i_id);
-                Link j = linksmap.get(j_id);
-                
-                if(i == null)
+                int node_id = filein.nextInt();
+                double offset = filein.nextDouble();
+
+                Node node = nodesmap.get(node_id);
+
+                if(node == null)
                 {
-                    throw new RuntimeException("Cannot find link "+i_id);
+                    throw new RuntimeException("Cannot find node "+node_id);
                 }
-                
-                if(j == null)
+
+                if(node instanceof Signal)
                 {
-                    throw new RuntimeException("Cannot find link "+j_id);
+                    ((Signal)node).setOffset(offset);
                 }
-                
-                protected_turns.add(new Link[]{i, j});
+
+                if(filein.hasNextLine())
+                {
+                    filein.nextLine();
+                }
             }
-            
-            Node node = nodesmap.get(node_id);
-            
-            if(node == null)
-            {
-                throw new RuntimeException("Cannot find node "+node_id);
-            }
-            
-            if(node instanceof Signal)
-            {
-                ((Signal)node).addPhase(sequence, green, yellow, all_red, protected_turns);
-            }
-            
+            filein.close();
+        }
+        catch(FileNotFoundException ex)
+        {
+            System.out.println("\tSkipping file \"networks/"+network_name+"/signals.txt\"");
+
         }
         
+        try
+        {
+            Scanner filein = new Scanner(phases);
+
+            while(!filein.hasNextInt() && filein.hasNextLine())
+            {
+                filein.nextLine();
+            }
+
+            while(filein.hasNextInt())
+            {
+                int node_id = filein.nextInt();
+                String type = filein.next();
+                int sequence = filein.nextInt();
+                double all_red = filein.nextDouble();
+                double yellow = filein.nextDouble();
+                double green = filein.nextDouble();
+
+                int num_moves = filein.nextInt();
+
+                String line = filein.nextLine();
+
+                // String[] containing ids of incoming links
+                String[] inc_links = line.substring(line.indexOf('{')+1, line.indexOf('}')).split(",");
+
+                // String[] containing ids of outgoing links
+                line = line.substring(line.indexOf('}')+1);
+                String[] out_links = line.substring(line.indexOf('{')+1, line.indexOf('}')).split(",");
+
+                // this is a list of protected turning movements
+                List<Link[]> protected_turns = new ArrayList<>();
+
+                for(int idx = 0; idx < num_moves; idx++)
+                {
+                    int i_id = Integer.parseInt(inc_links[idx].trim());
+                    int j_id = Integer.parseInt(out_links[idx].trim());
+
+                    Link i = linksmap.get(i_id);
+                    Link j = linksmap.get(j_id);
+
+                    if(i == null)
+                    {
+                        throw new RuntimeException("Cannot find link "+i_id);
+                    }
+
+                    if(j == null)
+                    {
+                        throw new RuntimeException("Cannot find link "+j_id);
+                    }
+
+                    protected_turns.add(new Link[]{i, j});
+                }
+
+                Node node = nodesmap.get(node_id);
+
+                if(node == null)
+                {
+                    throw new RuntimeException("Cannot find node "+node_id);
+                }
+
+                if(node instanceof Signal)
+                {
+                    ((Signal)node).addPhase(sequence, green, yellow, all_red, protected_turns);
+                }
+
+            }
+        }
+        catch(FileNotFoundException ex){
+            System.out.println("\tSkipping file \"networks/"+network_name+"/phases.txt\"");
+        }
     }
     
 }

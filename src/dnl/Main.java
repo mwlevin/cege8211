@@ -21,12 +21,11 @@ public class Main {
      */
     public static void main(String[] args) throws IOException
     {
-        //ReadNetwork read = new ReadNetwork();
-        //Network network = read.createNetwork("signal1");
-        //network.simulate();
+        ReadNetwork read = new ReadNetwork();
+        Network network = read.createNetwork("PQ1");
+        network.simulate();
         
-        Autograde.createSolutions(new File("HW6.txt"));
-        System.out.println(Autograde.gradeHW(new File("HW6.txt")));
+        Autograde.gradeHW(new File("HW1.txt"));
         
     }
     

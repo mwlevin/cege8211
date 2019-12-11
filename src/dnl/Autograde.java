@@ -34,14 +34,26 @@ public class Autograde
         int total = 0;
         double correct = 0;
         
+        
+        // used to trigger running msa() first before running dynamic network loading
+        boolean dta = false;
+        int num_iter = 0;
+        
         Scanner filein = new Scanner(testCases);
         
         System.err.println("Grading "+testCases+" tests\n");
         System.err.println("-------");
         
-        while(filein.hasNextLine())
+        while(filein.hasNext())
         {
             String name = filein.next();
+            
+            if(name.equalsIgnoreCase("dta"))
+            {
+                dta = true;
+                num_iter = filein.nextInt();
+                continue;
+            }
             
             String description = "";
             if(filein.hasNextLine())
@@ -54,7 +66,16 @@ public class Autograde
                 description = name;
             }
             
-            double output = gradeNetwork(name);
+            double output;
+            
+            if(dta)
+            {
+                output = gradeNetworkDTA(name, num_iter);
+            }
+            else
+            {
+                output = gradeNetwork(name);
+            }
             
             System.err.println("Running "+description+" test: networks/"+name+"/"); 
             System.err.println("\tScore: "+((int)Math.round(output*100.0))+"%");
@@ -78,13 +99,35 @@ public class Autograde
         return network.autograde(new File("networks/"+name+"/solution.txt"));
     }
     
+    public static double gradeNetworkDTA(String name, int num_iter) throws IOException
+    {
+        ReadNetwork read = new ReadNetwork();
+        Network network = read.createNetwork(name);
+        
+        network.msa(num_iter);
+
+        return network.autograde(new File("networks/"+name+"/solution.txt"));
+    }
+    
     public static void createSolutions(File testCases) throws IOException
     {
         Scanner filein = new Scanner(testCases);
         
-        while(filein.hasNextLine())
+        
+        // used to trigger running msa() first before running dynamic network loading
+        boolean dta = false;
+        int num_iter = 0;
+        
+        while(filein.hasNext())
         {
             String name = filein.next();
+            
+            if(name.equalsIgnoreCase("dta"))
+            {
+                dta = true;
+                num_iter = filein.nextInt();
+                continue;
+            }
             
             if(filein.hasNextLine())
             {
@@ -94,6 +137,11 @@ public class Autograde
             ReadNetwork read = new ReadNetwork();
             Network network = read.createNetwork(name);
 
+            if(dta)
+            {
+                network.msa(num_iter);
+            }
+            
             network.printAutograde(new File("networks/"+name+"/solution.txt"));
         }
         filein.close();

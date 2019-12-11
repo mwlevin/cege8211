@@ -59,6 +59,26 @@ public class Source extends Node
     }
     
     /**
+     * @return the total demand that enters the network between the two times.
+     */
+    public double getTotalDemand(int start_time, int end_time)
+    {
+        double output = 0.0;
+    
+        for(Double[] times : demand_rates.keySet())
+        {
+            double start = Math.max(start_time, times[0]);
+            double end = Math.min(end_time, times[1]);
+            
+            double rate = demand_rates.get(times);
+            
+            output += rate * (end - start) / 3600.0;
+        }
+        
+        return output;
+    }
+    
+    /**
      * This method is called every time step by {@link dnl.Network#nextTimestep()}.
      * Since this is a source node, it adds the exogenous amount of demand to the network - to the appropriate {@link dnl.link.CentroidConnector}. 
      * 
@@ -81,12 +101,12 @@ public class Source extends Node
             
             if(end_time >= start_time)
             {
-                rate += demand_rates.get(times) * (end_time - start_time) / Params.dt;
+                rate += demand_rates.get(times) * (end_time - start_time) / 3600.0;
             }
         }
         
         // now add demand at the given rate
-        double newDemand = rate * Params.dt / 3600.0;
+        double newDemand = rate;
         
         // split it according to turning proportions
         for(Link ds : getOutgoing())

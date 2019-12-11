@@ -1,1 +1,0 @@
-node	type	sequence	time_red	time_yellow	time_green	num_moves	link_from	link_to

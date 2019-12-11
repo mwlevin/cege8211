@@ -70,12 +70,11 @@ public abstract class Node implements Comparable<Node>
         turning_prop = new HashMap<>();
     }
     
-    
     /**
      * Resets this {@link Node} to start a new dynamic network loading
      */
     public abstract void reset();
-
+    
     
     /**
      * @return the elevation (in ft)
@@ -112,6 +111,25 @@ public abstract class Node implements Comparable<Node>
             turning_prop.put(i, new HashMap<>());
         }
         turning_prop.get(i).put(j, p);
+    }
+    
+    
+    /**
+     * @return the Map of turning proportions
+     */
+    public Map<Link, Map<Link, Double>> getTurningProportions()
+    {
+        return turning_prop;
+    }
+    
+    
+    /**
+     * Deletes all stored turning proportions. 
+     * This method is used for DTA.
+     */
+    public void clearTurningProportions()
+    {
+        turning_prop.clear();
     }
     
     
@@ -227,5 +245,5 @@ public abstract class Node implements Comparable<Node>
     
     // used by shortest path
     public Link pred;
-    public double arr_time;
+    public double cost;
 }

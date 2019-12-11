@@ -5,6 +5,7 @@
  */
 package dnl.link;
 
+import dnl.Params;
 import dnl.node.Node;
 
 /**
@@ -30,6 +31,7 @@ public class CentroidConnector extends Link
     public void reset()
     {
         n = 0;
+        total_y = 0;
     }
     
     public double getOccupancy()
@@ -45,7 +47,7 @@ public class CentroidConnector extends Link
     public void update()
     {
         // addFlow() and removeFlow() updated total_y; now we need to propagate those changes to the occupancy
-        n += total_y;
+        n = Math.max(0, n+total_y);
         
         // zero out total_y for the next time step
         total_y = 0;
@@ -55,6 +57,30 @@ public class CentroidConnector extends Link
     {
         // all flow can exit
         return n;
+    }
+    
+    /**
+     * @return the free flow travel time in s.
+     */
+    public double getFFTime()
+    {
+        return Params.dt;
+    }
+    
+    /**
+     * @return the capacity per lane in veh/hr
+     */
+    public double getCapacityPerLane()
+    {
+        return Double.MAX_VALUE;
+    }
+    
+    /**
+     * @return the total capacity in veh/hr
+     */
+    public double getCapacity()
+    {
+        return Double.MAX_VALUE;
     }
     
     public double getReceivingFlow()
