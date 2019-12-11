@@ -349,7 +349,8 @@ public class Network
     }
 
     /**
-     * Assumption: only one destination node exists in this network.
+     * Uses the method of successive averages to solve dynamic traffic assignment.
+     * Assumption: only one destination node ({@link dnl.node.Sink} node) exists in this network.
      * @param num_iterations the number of iterations
      */
     public void msa(int num_iterations)
@@ -380,48 +381,44 @@ public class Network
         {
             double lambda = 1.0/iteration;
             
-            double gap = msa_iteration(lambda, dest);
+            assignFlow(lambda, dest);
+            
+            simulate();
+            reset();
+            
+            double gap = calculateGap(dest);
             
             System.out.println(iteration+"\t"+gap);
         }
     }
     
-    public double msa_iteration(double lambda, Sink dest)
+    /**
+     * Finds the all-or-nothing assignment, and takes the convex combination with the current assignment for the method of successive averages.
+     * Assumption: only one destination node ({@link dnl.node.Sink} node) exists in this network.
+     * @param lambda the step size
+     * @param dest the single destination {@link dnl.node.Sink} node in the network
+     */
+    public void assignFlow(double lambda, Sink dest)
     {
-        // Find all-or-nothing assignment.
-        
-        // Take lambda-weighted convex combination of all-or-nothing assignment and current assignment.
-        // This involves adjusting the turning proportions at each node. 
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        simulate();
-        reset();
-        
-        return calculateGap(dest);
+        // fill this in
     }
     
+    /**
+     * Calculates the dynamic user equilibrium gap.
+     * Assumption: only one destination node ({@link dnl.node.Sink} node) exists in this network.
+     * @param dest the single destination {@link dnl.node.Sink} node in the network
+     * @return the dynamic user equilibrium gap
+     */
     public double calculateGap(Sink dest)
     {
         // fill this in
         return 0.0;
     }
+ 
     
     /**
-     * @return the shortest path TSTT possible if travel times are equal to the current shortest paths.
+     * @return the total system travel time (sec) from the last iteration
      */
-    public double getSPTT(Sink dest)
-    {
-        // fill this in
-        return 0.0;
-    }
-    
     public double getTSTT()
     {
         double output = 0.0;
