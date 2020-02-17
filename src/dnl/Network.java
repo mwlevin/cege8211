@@ -320,7 +320,7 @@ public class Network
     
     
     /**
-     * Runs one-to-all shortest path rooted at the specified destination node.
+     * Runs all-to-one shortest path rooted at the specified destination node.
      * This method sets the {@link Node} shortest path labels, {@link Node#cost} and {@link Node#pred}.
      */
     public void dijkstras(Node dest)
@@ -331,12 +331,23 @@ public class Network
     
     
     /**
-     * After running {@link Network#dijkstras()}, this method is used to find the shortest path between an origin and a destination.
+     * After running {@link #dijkstras(Node)}, this method is used to find the shortest path between an origin and a destination.
      */
     public Path trace(Node origin, Node dest)
     {
-        // fill this in
-        return null;
+        Node curr = origin;
+        
+        // the default trace, starting from the destination and moving to the origin, is going to create the list in reverse.
+        // We will construct a path as a Link[] later.
+        Path output = new Path();
+        
+        while(curr.pred != null)
+        {
+            output.add(curr.pred);
+            curr = curr.pred.getDest();
+        }
+        
+        return output;
     }
     
     /**
