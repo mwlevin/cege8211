@@ -69,7 +69,7 @@ public class PedSignal extends Node
         Link us = getIncoming().get(0);
         Link ds = getOutgoing().get(0);
         
-        double y = Math.min(us.getSendingFlow(), ds.getReceivingFlow()) * green_time;
+        double y = Math.min(us.getSendingFlow(), ds.getReceivingFlow()) * green_dt;
         
         us.removeFlow(y);
         ds.addFlow(y);
