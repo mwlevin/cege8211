@@ -1,7 +1,3 @@
-merge1
-merge2
-diverge1
-diverge2
 PQ1
 PQ2
 SQ1

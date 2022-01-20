@@ -1,15 +1,3 @@
-Creating network merge1
-	Skipping file "networks/merge1/signals.txt"
-	Skipping file "networks/merge1/phases.txt"
-Creating network merge2
-	Skipping file "networks/merge2/signals.txt"
-	Skipping file "networks/merge2/phases.txt"
-Creating network diverge1
-	Skipping file "networks/diverge1/signals.txt"
-	Skipping file "networks/diverge1/phases.txt"
-Creating network diverge2
-	Skipping file "networks/diverge2/signals.txt"
-	Skipping file "networks/diverge2/phases.txt"
 Creating network PQ1
 	Skipping file "networks/PQ1/signals.txt"
 	Skipping file "networks/PQ1/phases.txt"

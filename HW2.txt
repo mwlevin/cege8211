@@ -1,3 +1,4 @@
-CTM1
-CTM2
-CTM3
+merge1
+merge2
+diverge1
+diverge2
