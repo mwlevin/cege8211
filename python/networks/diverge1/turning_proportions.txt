@@ -1,0 +1,4 @@
+upstream link	downstream link	proportion
+0	12	1
+12	23	0.5
+12	24	0.5

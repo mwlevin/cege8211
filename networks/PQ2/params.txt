@@ -1,3 +1,0 @@
-dt	2
-duration	7200
-jam_density	264

@@ -1,0 +1,7 @@
+id	type	source	dest	length (mi)	ffspd (mph)	capacity(veh/hr)	num_lanes
+12	centroid-connector	1	2	1	30	1200	1
+23	ctm	2	3	3	30	1200	2
+24	ctm	2	4	3	30	1200	2
+35	ctm	3	5	1	30	1200	1
+45	ctm	4	5	1.5	30	1200	2
+56	centroid-connector	5	6	1	30	1200	1

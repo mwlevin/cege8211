@@ -1,0 +1,3 @@
+id	type	source	dest	length (mi)	ffspd (mph)	capacity(veh/hr)	num_lanes
+12	point-queue	1	2	1.5	30	1200	1
+23	point-queue	2	3	0.75	30	600	1
