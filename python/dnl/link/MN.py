@@ -1,5 +1,3 @@
-"""Python version of ``dnl/link/MN.java``."""
-
 from __future__ import annotations
 
 from dnl.link.Link import Link

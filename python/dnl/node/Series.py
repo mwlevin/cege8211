@@ -1,5 +1,3 @@
-"""Python version of ``dnl/node/Series.java``."""
-
 from __future__ import annotations
 
 from dnl.node.Node import Node
@@ -20,7 +18,7 @@ class Series(Node):
 
     def step(self):
         # move flow from upstream link to downstream link as permitted by sending and receiving flows.
-        # if there is more than 1 upstream or downstream link, throw an error - this is not the intersection control you're looking for.
+        # if there is more than 1 upstream or downstream link, raise an error - this is not the intersection control you're looking for.
         if len(self.getIncoming()) != 1 or len(self.getOutgoing()) != 1:
             raise RuntimeError(f"Node {self.getId()}: Wrong number of incoming or outgoing links: \n"
                                f"Incoming: {len(self.getIncoming())} Outgoing: {len(self.getOutgoing())}")

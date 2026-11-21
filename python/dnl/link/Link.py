@@ -1,5 +1,3 @@
-"""Python version of ``dnl/link/Link.java``."""
-
 from __future__ import annotations
 
 from abc import ABC, abstractmethod

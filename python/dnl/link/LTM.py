@@ -1,5 +1,3 @@
-"""Python version of ``dnl/link/LTM.java``."""
-
 from __future__ import annotations
 
 import math

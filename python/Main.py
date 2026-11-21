@@ -1,4 +1,4 @@
-"""Entry point for running the project. Python version of ``dnl/Main.java``.
+"""Entry point for running the project.
 
 Run from the python/ folder with::
 

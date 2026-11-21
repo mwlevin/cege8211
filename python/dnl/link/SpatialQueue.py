@@ -1,5 +1,3 @@
-"""Python version of ``dnl/link/SpatialQueue.java``."""
-
 from __future__ import annotations
 
 from dnl.link.PointQueue import PointQueue

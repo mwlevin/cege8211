@@ -1,4 +1,4 @@
-"""Python version of ``dnl/Autograde.java``.
+"""Autograder: compares simulation results to the answers in networks/<name>/solution.txt.
 
 Run from the python/ folder with, e.g.::
 
@@ -24,7 +24,7 @@ def _resolve(path) -> FilePath:
 
 
 def _percent(x: float) -> int:
-    """Rounds a proportion to a whole percent, the same way the Java version does."""
+    """Rounds a proportion to a whole percent (halves round up)."""
     if math.isnan(x):
         return 0
     return int(math.floor(x * 100.0 + 0.5))

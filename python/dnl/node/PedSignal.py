@@ -1,5 +1,3 @@
-"""Python version of ``dnl/node/PedSignal.java``."""
-
 from __future__ import annotations
 
 from dnl.node.Node import Node

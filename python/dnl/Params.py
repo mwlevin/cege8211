@@ -1,7 +1,5 @@
 """Global parameters that are useful across the entire project.
 
-Python version of ``dnl/Params.java``.
-
 The values are stored as class attributes of :class:`Params`, so every module
 sees the same values. Always access them through the class, e.g.
 ``Params.dt`` or ``Params.time``.
@@ -31,7 +29,6 @@ class Params:
 # This is the "python" folder, so the code works no matter which directory you run it from.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
-# Stand-ins for "infinity" that match the values used by the Java version
-# (Integer.MAX_VALUE and Double.MAX_VALUE). Flow will never be this high.
+# Stand-ins for "infinity". Flow will never be this high.
 INTEGER_MAX_VALUE = 2147483647
 DOUBLE_MAX_VALUE = sys.float_info.max

@@ -1,5 +1,3 @@
-"""Python version of ``dnl/Path.java``."""
-
 from __future__ import annotations
 
 

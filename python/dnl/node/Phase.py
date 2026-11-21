@@ -1,5 +1,3 @@
-"""Python version of ``dnl/node/Phase.java``."""
-
 from __future__ import annotations
 
 

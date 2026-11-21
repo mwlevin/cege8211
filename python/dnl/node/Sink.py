@@ -1,5 +1,3 @@
-"""Python version of ``dnl/node/Sink.java``."""
-
 from __future__ import annotations
 
 from dnl.node.Node import Node
