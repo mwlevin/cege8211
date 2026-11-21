@@ -36,12 +36,10 @@ public class Series extends Node
         
         // upstream link
         Link us = getIncoming().get(0);
+        // downstream link
         Link ds = getOutgoing().get(0);
         
-        double y = Math.min(us.getSendingFlow(), ds.getReceivingFlow());
-        
-        us.removeFlow(y);
-        ds.addFlow(y);
+        // fill this in
     }
     
     public void update()

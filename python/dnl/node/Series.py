@@ -26,10 +26,7 @@ class Series(Node):
         us = self.getIncoming()[0]  # upstream link
         ds = self.getOutgoing()[0]  # downstream link
 
-        y = min(us.getSendingFlow(), ds.getReceivingFlow())
-
-        us.removeFlow(y)
-        ds.addFlow(y)
+        # fill this in
 
     def update(self):
         # nothing to do here
