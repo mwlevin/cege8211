@@ -28,16 +28,3 @@ name. For example, `PointQueue.getSendingFlow()` is in `src/dnl/link/PointQueue.
 
 Python does not allow two methods with the same name, so `Network.getLink` accepts either form:
 `getLink(id)` finds a link by id, and `getLink(i, j)` finds the link from node `i` to node `j`.
-
-## Differences from Java worth knowing
-
-- **Global parameters** are attributes of the `Params` class: `Params.dt`, `Params.time`,
-  `Params.DURATION`, and `Params.JAM_DENSITY` (import with `from dnl.Params import Params`).
-- **Rounding:** Python's `round()` rounds halves to the nearest even number (`round(2.5) == 2`), but
-  Java's `Math.round()` rounds halves up. To match the solutions, use `int(math.floor(x + 0.5))`.
-- **Division by zero** raises an error in Python instead of giving `Infinity` or `NaN`.
-- **Lists:** `collections.deque` works like Java's `LinkedList`: `append()` adds to the end,
-  `popleft()` removes from the front, `q[0]` is the first item, and `q[-1]` is the last.
-- **Infinity:** `INTEGER_MAX_VALUE` and `DOUBLE_MAX_VALUE` in `dnl/Params.py` match Java's
-  `Integer.MAX_VALUE` and `Double.MAX_VALUE`. `math.inf` also works.
-- `null` is `None`, and `instanceof` is `isinstance(x, ClassName)`.
