@@ -20,6 +20,3 @@ Each network's correct answers are in `networks/<name>/solution.txt`.
 
 Each class is in a file with the same name, e.g. `PointQueue` is in `dnl/link/PointQueue.py`.
 The methods you need to write contain the comment `# fill this in`.
-
-`Network.getLink` can be called two ways: `getLink(id)` finds a link by id, and `getLink(i, j)` finds the
-link from node `i` to node `j`.

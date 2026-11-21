@@ -49,20 +49,15 @@ class Network:
                 return n
         return None
 
-    def getLink(self, *args):
-        """Finds a Link. If none exists, returns None.
+    def getLink(self, id: int):
+        """Finds the Link with the given id. If none exists, returns None."""
+        for l in self.links:
+            if l.getId() == id:
+                return l
+        return None
 
-        getLink(id) returns the Link with the given id.
-        getLink(i, j) returns the Link from Node i to Node j.
-        """
-        if len(args) == 1:
-            id = args[0]
-            for l in self.links:
-                if l.getId() == id:
-                    return l
-            return None
-
-        i, j = args
+    def getLinkBetween(self, i, j):
+        """Returns the Link from Node i to Node j, or None if none exists."""
         for l in i.getOutgoing():
             if l.getDest() is j:
                 return l
