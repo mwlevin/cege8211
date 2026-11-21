@@ -5,21 +5,21 @@ from __future__ import annotations
 import math
 from collections import deque
 
-from dnl.link.link import Link
-from dnl.params import Params
+from dnl.link.Link import Link
+from dnl.Params import Params
 
 
 class PointQueue(Link):
     """Propagates flow according to the point queue model (no spatial constraints)."""
 
-    def __init__(self, id, source, dest, length, ffspd, capacity_per_lane, num_lanes):
-        super().__init__(id, source, dest, length, ffspd, capacity_per_lane, num_lanes)
+    def __init__(self, id, source, dest, length, ffspd, capacityPerLane, numLanes):
+        super().__init__(id, source, dest, length, ffspd, capacityPerLane, numLanes)
 
     def reset(self):
         # fill this in
         pass
 
-    def get_occupancy(self):
+    def getOccupancy(self):
         # fill this in
         return 0.0
 
@@ -31,18 +31,18 @@ class PointQueue(Link):
         # fill this in
         pass
 
-    def get_sending_flow(self):
+    def getSendingFlow(self):
         # fill this in
         return 0.0
 
-    def get_receiving_flow(self):
+    def getReceivingFlow(self):
         # fill this in
         return 0.0
 
-    def add_flow(self, y):
+    def addFlow(self, y):
         # fill this in
         pass
 
-    def remove_flow(self, y):
+    def removeFlow(self, y):
         # fill this in
         pass

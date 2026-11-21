@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from dnl.link.point_queue import PointQueue
-from dnl.params import Params
+from dnl.link.PointQueue import PointQueue
+from dnl.Params import Params
 
 
 class SpatialQueue(PointQueue):
@@ -12,18 +12,18 @@ class SpatialQueue(PointQueue):
     Includes capacity constraints and a density constraint per link.
     """
 
-    def __init__(self, id, source, dest, length, ffspd, capacity_per_lane, num_lanes):
-        super().__init__(id, source, dest, length, ffspd, capacity_per_lane, num_lanes)
+    def __init__(self, id, source, dest, length, ffspd, capacityPerLane, numLanes):
+        super().__init__(id, source, dest, length, ffspd, capacityPerLane, numLanes)
 
-    def get_receiving_flow(self):
+    def getReceivingFlow(self):
         # fill this in
         return 0.0
 
-    def add_flow(self, y):
+    def addFlow(self, y):
         # fill this in
         pass
 
-    def remove_flow(self, y):
+    def removeFlow(self, y):
         # fill this in
         pass
 

@@ -2,19 +2,19 @@
 
 Run from the python/ folder with::
 
-    python main.py
+    python Main.py
 """
 
-from dnl import autograde
-from dnl.read_network import ReadNetwork
+from dnl.Autograde import Autograde
+from dnl.ReadNetwork import ReadNetwork
 
 
 def main():
     read = ReadNetwork()
-    network = read.create_network("PQ1")
+    network = read.createNetwork("PQ1")
     network.simulate()
 
-    autograde.grade_hw("HW1.txt")
+    Autograde.gradeHW("HW1.txt")
 
 
 if __name__ == "__main__":

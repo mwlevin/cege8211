@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dnl.node.node import Node
+from dnl.node.Node import Node
 
 
 class Series(Node):
@@ -21,17 +21,17 @@ class Series(Node):
     def step(self):
         # move flow from upstream link to downstream link as permitted by sending and receiving flows.
         # if there is more than 1 upstream or downstream link, throw an error - this is not the intersection control you're looking for.
-        if len(self.get_incoming()) != 1 or len(self.get_outgoing()) != 1:
-            raise RuntimeError(f"Node {self.get_id()}: Wrong number of incoming or outgoing links: \n"
-                               f"Incoming: {len(self.get_incoming())} Outgoing: {len(self.get_outgoing())}")
+        if len(self.getIncoming()) != 1 or len(self.getOutgoing()) != 1:
+            raise RuntimeError(f"Node {self.getId()}: Wrong number of incoming or outgoing links: \n"
+                               f"Incoming: {len(self.getIncoming())} Outgoing: {len(self.getOutgoing())}")
 
-        us = self.get_incoming()[0]  # upstream link
-        ds = self.get_outgoing()[0]  # downstream link
+        us = self.getIncoming()[0]  # upstream link
+        ds = self.getOutgoing()[0]  # downstream link
 
-        y = min(us.get_sending_flow(), ds.get_receiving_flow())
+        y = min(us.getSendingFlow(), ds.getReceivingFlow())
 
-        us.remove_flow(y)
-        ds.add_flow(y)
+        us.removeFlow(y)
+        ds.addFlow(y)
 
     def update(self):
         # nothing to do here

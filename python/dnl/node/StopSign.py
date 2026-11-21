@@ -1,13 +1,15 @@
-"""Python version of ``dnl/node/Diverge.java``."""
+"""Python version of ``dnl/node/StopSign.java``."""
 
 from __future__ import annotations
 
-from dnl.node.node import Node
-from dnl.params import Params
+from dnl.node.Node import Node
 
 
-class Diverge(Node):
-    """A diverge: where 1 upstream link branches out into 2 or more downstream links."""
+class StopSign(Node):
+    """The equal priority intersection discussed in class.
+
+    Every approach has equal priority for intersection flow.
+    """
 
     def __init__(self, id, longitude, latitude, elevation):
         super().__init__(id, longitude, latitude, elevation)

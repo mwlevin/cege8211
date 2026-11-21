@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dnl.node.node import Node
+from dnl.node.Node import Node
 
 
 class Sink(Node):
@@ -10,30 +10,30 @@ class Sink(Node):
 
     def __init__(self, id, longitude, latitude, elevation):
         super().__init__(id, longitude, latitude, elevation)
-        self._exiting = 0.0
+        self.exiting = 0.0
 
     def reset(self):
-        self._exiting = 0.0
+        self.exiting = 0.0
 
     def step(self):
-        self._exiting = 0.0
+        self.exiting = 0.0
         # all vehicles reaching the sink are removed.
-        for us in self.get_incoming():
-            y = us.get_sending_flow()
-            self._exiting += y
-            us.remove_flow(y)
+        for us in self.getIncoming():
+            y = us.getSendingFlow()
+            self.exiting += y
+            us.removeFlow(y)
 
     def update(self):
         # nothing to do here
         pass
 
-    def get_num_exiting(self) -> float:
-        return self._exiting
+    def getNumExiting(self) -> float:
+        return self.exiting
 
-    def store_turning_proportion(self, i, j, p):
+    def storeTurningProportion(self, i, j, p):
         # removed due to uselessness
         pass
 
-    def get_turning_prop(self, i, j):
+    def getTurningProp(self, i, j):
         # all vehicles exit when reaching the sink
         return 1

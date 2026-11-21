@@ -6,10 +6,10 @@ import math
 import traceback
 import sys
 
-from dnl.params import Params
-from dnl.path import Path
-from dnl.node.sink import Sink
-from dnl.node.source import Source
+from dnl.Params import Params
+from dnl.Path import Path
+from dnl.node.Sink import Sink
+from dnl.node.Source import Source
 
 
 class Network:
@@ -17,8 +17,8 @@ class Network:
 
     Generally, this will be the go-to class for dealing with the network as a whole.
     The easiest way to construct a new Network is to create an instance of ReadNetwork, then call
-    ReadNetwork.create_network(name) with the name of the network folder.
-    To calculate the state of the network at the next time step, call next_timestep().
+    ReadNetwork.createNetwork(name) with the name of the network folder.
+    To calculate the state of the network at the next time step, call nextTimestep().
     There are also methods to get the lists of Nodes and Links, and the specific Node or Link with a given id.
     """
 
@@ -26,42 +26,47 @@ class Network:
         """Constructs the Network with the given Nodes and Links.
 
         In general, the easiest way to construct a Network will be to create a new ReadNetwork instance,
-        then call ReadNetwork.create_network(name) with the name of the network folder.
+        then call ReadNetwork.createNetwork(name) with the name of the network folder.
         """
-        self._nodes = nodes
-        self._links = links
-        self._name = name
+        self.nodes = nodes
+        self.links = links
+        self.name = name
 
-    def get_name(self) -> str:
+    def getName(self) -> str:
         """Returns the name of the network."""
-        return self._name
+        return self.name
 
-    def get_nodes(self) -> list:
+    def getNodes(self) -> list:
         """Returns the list of all Nodes."""
-        return self._nodes
+        return self.nodes
 
-    def get_links(self) -> list:
+    def getLinks(self) -> list:
         """Returns the list of all Links."""
-        return self._links
+        return self.links
 
-    def get_node(self, id: int):
+    def getNode(self, id: int):
         """Finds the Node with the given id. If none exists, returns None."""
-        for n in self._nodes:
-            if n.get_id() == id:
+        for n in self.nodes:
+            if n.getId() == id:
                 return n
         return None
 
-    def get_link(self, id: int):
-        """Finds the Link with the given id. If none exists, returns None."""
-        for l in self._links:
-            if l.get_id() == id:
-                return l
-        return None
+    def getLink(self, *args):
+        """Finds a Link. If none exists, returns None.
 
-    def get_link_between(self, i, j):
-        """Returns the Link from Node i to Node j, or None if none exists."""
-        for l in i.get_outgoing():
-            if l.get_dest() is j:
+        getLink(id) returns the Link with the given id.
+        getLink(i, j) returns the Link from Node i to Node j.
+        """
+        if len(args) == 1:
+            id = args[0]
+            for l in self.links:
+                if l.getId() == id:
+                    return l
+            return None
+
+        i, j = args
+        for l in i.getOutgoing():
+            if l.getDest() is j:
                 return l
         return None
 
@@ -76,10 +81,10 @@ class Network:
             rows = f.read().split()
 
         # header is "time", then the sink node ids, then "end"
-        sol_order = []
+        solOrder = []
         for token in header[1:]:
             try:
-                sol_order.append(self.get_node(int(token)))
+                solOrder.append(self.getNode(int(token)))
             except ValueError:
                 break
 
@@ -92,14 +97,14 @@ class Network:
 
         try:
             while Params.time <= Params.DURATION:
-                self.next_timestep()
+                self.nextTimestep()
 
                 if int(next(tokens)) != Params.time - Params.dt:
                     raise RuntimeError("Time mismatch")
 
-                for s in sol_order:
+                for s in solOrder:
                     solution = float(next(tokens))
-                    exiting = s.get_num_exiting()
+                    exiting = s.getNumExiting()
 
                     if solution > 0.1 or exiting > 0.1:
                         if abs(solution - exiting) <= 0.01:
@@ -112,48 +117,48 @@ class Network:
             return math.nan
         return correct / count
 
-    def print_autograde(self, output) -> None:
+    def printAutograde(self, output) -> None:
         """Simulates the network and writes the exiting vehicles from each Sink node to the given file.
 
         This is used to create the solution.txt files.
         """
-        sinks = [n for n in self._nodes if isinstance(n, Sink)]
+        sinks = [n for n in self.nodes if isinstance(n, Sink)]
 
         with open(output, "w") as fileout:
             fileout.write("time")
             for n in sinks:
-                fileout.write("\t" + str(n.get_id()))
+                fileout.write("\t" + str(n.getId()))
             fileout.write("\t end\n")
 
             Params.time = 0
 
             while Params.time <= Params.DURATION:
-                self.next_timestep()
+                self.nextTimestep()
 
                 fileout.write(str(Params.time - Params.dt))
 
                 for n in sinks:
-                    fileout.write("\t" + repr(float(n.get_num_exiting())))
+                    fileout.write("\t" + repr(float(n.getNumExiting())))
                 fileout.write("\n")
 
         # calculate the average travel time for each link
-        for l in self._links:
-            l.calculate_travel_time()
+        for l in self.links:
+            l.calculateTravelTime()
 
     def simulate(self) -> None:
         """Simulates traffic flow from the current time to Params.DURATION.
 
-        It calls next_timestep() for each time step.
-        Calculates the link travel times using Link.calculate_travel_time().
+        It calls nextTimestep() for each time step.
+        Calculates the link travel times using Link.calculateTravelTime().
         """
         while Params.time <= Params.DURATION:
-            self.next_timestep()
+            self.nextTimestep()
 
         # calculate the average travel time for each link
-        for l in self._links:
-            l.calculate_travel_time()
+        for l in self.links:
+            l.calculateTravelTime()
 
-    def next_timestep(self) -> None:
+    def nextTimestep(self) -> None:
         """Calculates the state of the network at the next time step.
 
         First, it calls step() on all Links and Nodes.
@@ -161,24 +166,24 @@ class Network:
         Nodes and Links should implement step() and update() according to their specific traffic flow behavior.
         """
         # calculate flow to move during the next time step
-        for l in self._links:
+        for l in self.links:
             l.step()
 
         # calculate flow to move during the next time step
-        for n in self._nodes:
+        for n in self.nodes:
             n.step()
 
         # actually move flow for the next time step
-        for l in self._links:
+        for l in self.links:
             l.update()
 
         # actually move flow for the next time step
-        for n in self._nodes:
+        for n in self.nodes:
             n.update()
 
         # Used to calculate average travel time.
-        for l in self._links:
-            l.log_occupancy_time()
+        for l in self.links:
+            l.logOccupancyTime()
 
         # update the current time
         Params.time += Params.dt
@@ -199,11 +204,11 @@ class Network:
 
         while curr.pred is not None:
             output.append(curr.pred)
-            curr = curr.pred.get_dest()
+            curr = curr.pred.getDest()
 
         return output
 
-    def shortest_path(self, origin, dest) -> Path:
+    def shortestPath(self, origin, dest) -> Path:
         """Calls dijkstras(dest) then trace(origin, dest) to find the shortest path between two Nodes."""
         self.dijkstras(dest)
         return self.trace(origin, dest)
@@ -215,10 +220,10 @@ class Network:
         """
         Params.time = 0
 
-        for n in self._nodes:
+        for n in self.nodes:
             n.reset()
 
-        for l in self._links:
+        for l in self.links:
             l.reset()
 
     def msa(self, num_iterations: int) -> None:
@@ -229,12 +234,12 @@ class Network:
         :param num_iterations: the number of iterations
         """
         # delete turning proportions
-        for n in self._nodes:
-            n.clear_turning_proportions()
+        for n in self.nodes:
+            n.clearTurningProportions()
 
         # find destination node
         dest = None
-        for n in self._nodes:
+        for n in self.nodes:
             if isinstance(n, Sink):
                 if dest is not None:
                     raise RuntimeError("DNL is not equipped to handle multiple destinations.")
@@ -245,16 +250,16 @@ class Network:
         for iteration in range(1, num_iterations + 1):
             lam = 1.0 / iteration
 
-            self.assign_flow(lam, dest)
+            self.assignFlow(lam, dest)
 
             self.simulate()
             self.reset()
 
-            gap = self.calculate_gap(dest)
+            gap = self.calculateGap(dest)
 
             print(f"{iteration}\t{gap}")
 
-    def assign_flow(self, lam: float, dest) -> None:
+    def assignFlow(self, lam: float, dest) -> None:
         """Finds the all-or-nothing assignment, and takes the convex combination with the current assignment.
 
         This is one step of the method of successive averages.
@@ -266,7 +271,7 @@ class Network:
         # fill this in
         pass
 
-    def calculate_gap(self, dest) -> float:
+    def calculateGap(self, dest) -> float:
         """Calculates the dynamic user equilibrium gap.
 
         Assumption: only one destination node (Sink node) exists in this network.
@@ -277,11 +282,11 @@ class Network:
         # fill this in
         return 0.0
 
-    def get_tstt(self) -> float:
+    def getTSTT(self) -> float:
         """Returns the total system travel time (sec) from the last iteration."""
         output = 0.0
 
-        for l in self._links:
-            output += l.get_total_tt()
+        for l in self.links:
+            output += l.getTotalTT()
 
         return output

@@ -23,18 +23,18 @@ class Node(ABC):
         :param elevation: the elevation (in ft)
         """
         # store node parameters
-        self._id = id
-        self._elevation = elevation
-        self._latitude = latitude
-        self._longitude = longitude
+        self.id = id
+        self.elevation = elevation
+        self.latitude = latitude
+        self.longitude = longitude
 
         # construct incoming and outgoing lists. They will be populated as links are constructed.
-        self._incoming = []
-        self._outgoing = []
+        self.incoming = []
+        self.outgoing = []
 
         # Stores turning proportions between links: turning_prop[i][j] is the proportion from link i to link j.
         # Turning proportions specify the route assignment.
-        self._turning_prop = {}
+        self.turning_prop = {}
 
         # used by shortest path
         self.pred = None
@@ -44,62 +44,62 @@ class Node(ABC):
     def reset(self) -> None:
         """Resets this Node to start a new dynamic network loading."""
 
-    def get_elevation(self) -> float:
+    def getElevation(self) -> float:
         """Returns the elevation (in ft)."""
-        return self._elevation
+        return self.elevation
 
-    def get_latitude(self) -> float:
+    def getLatitude(self) -> float:
         """Returns the latitude."""
-        return self._latitude
+        return self.latitude
 
-    def get_longitude(self) -> float:
+    def getLongitude(self) -> float:
         """Returns the longitude."""
-        return self._longitude
+        return self.longitude
 
-    def store_turning_proportion(self, i, j, p: float) -> None:
+    def storeTurningProportion(self, i, j, p: float) -> None:
         """Used when constructing the Node: adjusts the turning proportion from Link i to Link j.
 
         Turning proportions must add to 1 for all incoming Links.
         """
-        if i not in self._turning_prop:
-            self._turning_prop[i] = {}
-        self._turning_prop[i][j] = p
+        if i not in self.turning_prop:
+            self.turning_prop[i] = {}
+        self.turning_prop[i][j] = p
 
-    def get_turning_proportions(self) -> dict:
+    def getTurningProportions(self) -> dict:
         """Returns the dict of turning proportions."""
-        return self._turning_prop
+        return self.turning_prop
 
-    def clear_turning_proportions(self) -> None:
+    def clearTurningProportions(self) -> None:
         """Deletes all stored turning proportions. This method is used for DTA."""
-        self._turning_prop.clear()
+        self.turning_prop.clear()
 
-    def get_turning_prop(self, i, j) -> float:
+    def getTurningProp(self, i, j) -> float:
         """Returns the proportion of flow leaving Link i turning onto Link j. The value is between 0 and 1."""
-        if len(self.get_outgoing()) <= 1:
+        if len(self.getOutgoing()) <= 1:
             return 1
-        if i in self._turning_prop and j in self._turning_prop[i]:
-            return self._turning_prop[i][j]
+        if i in self.turning_prop and j in self.turning_prop[i]:
+            return self.turning_prop[i][j]
         else:
             return 0.0
 
-    def get_incoming(self) -> list:
+    def getIncoming(self) -> list:
         """Returns the list of incoming Links."""
-        return self._incoming
+        return self.incoming
 
-    def get_outgoing(self) -> list:
+    def getOutgoing(self) -> list:
         """Returns the list of outgoing Links."""
-        return self._outgoing
+        return self.outgoing
 
-    def add_link(self, link) -> None:
+    def addLink(self, link) -> None:
         """Adds the Link to the incoming or outgoing lists of links, as appropriate."""
-        if link.get_source() is self:
-            self._outgoing.append(link)
-        elif link.get_dest() is self:
-            self._incoming.append(link)
+        if link.getSource() is self:
+            self.outgoing.append(link)
+        elif link.getDest() is self:
+            self.incoming.append(link)
 
-    def get_id(self) -> int:
+    def getId(self) -> int:
         """Returns the id for this Node."""
-        return self._id
+        return self.id
 
     @abstractmethod
     def step(self) -> None:
@@ -115,12 +115,12 @@ class Node(ABC):
 
     def __lt__(self, other: "Node") -> bool:
         """Used to sort Nodes by id."""
-        return self._id < other._id
+        return self.id < other.id
 
     def __hash__(self) -> int:
         """Used for hashing. You can ignore it."""
-        return self._id
+        return self.id
 
     def __repr__(self) -> str:
         """Returns the id of the Node."""
-        return str(self._id)
+        return str(self.id)

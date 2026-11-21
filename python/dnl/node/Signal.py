@@ -2,29 +2,29 @@
 
 from __future__ import annotations
 
-from dnl.node.node import Node
-from dnl.node.phase import Phase
-from dnl.params import Params
+from dnl.node.Node import Node
+from dnl.node.Phase import Phase
+from dnl.Params import Params
 
 
 class Signal(Node):
     """A traffic signal. There can be any number of incoming and outgoing links.
 
-    During construction, add_phase() and set_offset() will be called to store signal cycle information.
-    add_phase() adds a phase to the signal cycle; set_offset() sets the start time of the cycle (relative to 0).
+    During construction, addPhase() and setOffset() will be called to store signal cycle information.
+    addPhase() adds a phase to the signal cycle; setOffset() sets the start time of the cycle (relative to 0).
     """
 
     def __init__(self, id, longitude, latitude, elevation):
         super().__init__(id, longitude, latitude, elevation)
 
-        self._phases = []
-        self._offset = 0.0
+        self.phases = []
+        self.offset = 0.0
 
-        self._curr_phase = -1
-        self._cycle_length = 0.0
+        self.curr_phase = -1
+        self.cycle_length = 0.0
 
         # this is the time in the cycle. It resets to 0 whenever the cycle duration is exceeded.
-        self._curr_time = 0.0
+        self.curr_time = 0.0
 
     def reset(self):
         # fill this in
@@ -39,20 +39,20 @@ class Signal(Node):
         # fill this in
         pass
 
-    def get_cycle_length(self) -> float:
+    def getCycleLength(self) -> float:
         """Returns the length of the cycle, in s."""
-        return self._cycle_length
+        return self.cycle_length
 
-    def set_offset(self, offset: float) -> None:
+    def setOffset(self, offset: float) -> None:
         """Updates the offset of the signal cycle (in s).
 
         For instance, if the offset is 21s, then phase 1 starts at t=21s.
         Note that the signal cycle repeats, so there will always be a phase active at t=0.
         Depending on the offset, it may not be the first phase!
         """
-        self._offset = offset
+        self.offset = offset
 
-    def add_phase(self, sequence: int, green: float, yellow: float, all_red: float, protected_turns) -> None:
+    def addPhase(self, sequence: int, green: float, yellow: float, all_red: float, protected_turns) -> None:
         """Adds the specified phase to this signal. Recall that a signal cycle consists of a list of phases.
 
         Sequence is the order that this phase occurs in a fixed cycle, starting from 1.
@@ -61,5 +61,5 @@ class Signal(Node):
         For instance, if (i, j) is in protected_turns, then this phase allows movement from i to j.
         """
         phase = Phase(green, yellow, all_red, protected_turns)
-        self._phases.insert(sequence - 1, phase)
-        self._cycle_length += phase.get_duration()
+        self.phases.insert(sequence - 1, phase)
+        self.cycle_length += phase.getDuration()

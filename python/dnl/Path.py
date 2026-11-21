@@ -6,23 +6,23 @@ from __future__ import annotations
 class Path(list):
     """A path, which is an ordered list of Links. It is constructed as a subclass of list."""
 
-    def get_ff_time(self) -> float:
+    def getFFTime(self) -> float:
         """Returns the free flow travel time of this path in s."""
         output = 0.0
         for link in self:
-            output += link.get_ff_time()
+            output += link.getFFTime()
         return output
 
-    def get_avg_time(self) -> float:
+    def getAvgTime(self) -> float:
         """Returns the average travel time of this path in s."""
         output = 0.0
         for link in self:
-            output += link.get_avg_tt()
+            output += link.getAvgTT()
         return output
 
-    def get_length(self) -> float:
+    def getLength(self) -> float:
         """Returns the total length of this path in mi."""
         output = 0.0
         for link in self:
-            output += link.get_length()
+            output += link.getLength()
         return output

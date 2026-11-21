@@ -4,24 +4,24 @@ from __future__ import annotations
 
 import re
 
-from dnl.network import Network
-from dnl.params import Params, BASE_DIR
+from dnl.Network import Network
+from dnl.Params import Params, BASE_DIR
 
-from dnl.link.ctm import CTM
-from dnl.link.ltm import LTM
-from dnl.link.mn import MN
-from dnl.link.centroid_connector import CentroidConnector
-from dnl.link.point_queue import PointQueue
-from dnl.link.spatial_queue import SpatialQueue
+from dnl.link.CTM import CTM
+from dnl.link.LTM import LTM
+from dnl.link.MN import MN
+from dnl.link.CentroidConnector import CentroidConnector
+from dnl.link.PointQueue import PointQueue
+from dnl.link.SpatialQueue import SpatialQueue
 
-from dnl.node.diverge import Diverge
-from dnl.node.merge import Merge
-from dnl.node.ped_signal import PedSignal
-from dnl.node.series import Series
-from dnl.node.signal import Signal
-from dnl.node.sink import Sink
-from dnl.node.source import Source
-from dnl.node.stop_sign import StopSign
+from dnl.node.Diverge import Diverge
+from dnl.node.Merge import Merge
+from dnl.node.PedSignal import PedSignal
+from dnl.node.Series import Series
+from dnl.node.Signal import Signal
+from dnl.node.Sink import Sink
+from dnl.node.Source import Source
+from dnl.node.StopSign import StopSign
 
 
 def _is_int(token: str) -> bool:
@@ -68,8 +68,8 @@ class ReadNetwork:
 
     # These are Link types. They are not case-sensitive.
     # They are used in the type field in the links.txt input file.
-    CTM = "ctm"
-    LTM = "ltm"
+    CTM = "CTM"
+    LTM = "LTM"
     CENTROID_CONNECTOR = "centroid-connector"
     POINT_QUEUE = "point-queue"
     SPATIAL_QUEUE = "spatial-queue"
@@ -77,49 +77,49 @@ class ReadNetwork:
 
     def __init__(self):
         """Constructs a new ReadNetwork."""
-        self._network_name = None
-        self._nodesmap = None
-        self._linksmap = None
+        self.network_name = None
+        self.nodesmap = None
+        self.linksmap = None
 
-    def create_network(self, name: str) -> Network:
+    def createNetwork(self, name: str) -> Network:
         """Reads in the network with the given directory.
 
         For instance, if given the name "2-link", it will read in the network in the "networks/2-link" folder.
         """
         print("Creating network " + name)
 
-        self._network_name = name
+        self.network_name = name
 
-        self._nodesmap = {}
-        self._linksmap = {}
+        self.nodesmap = {}
+        self.linksmap = {}
 
         folder = BASE_DIR / "networks" / name
 
-        self.read_params(folder / "params.txt")
-        self.read_nodes(folder / "nodes.txt")
-        self.read_links(folder / "links.txt")
-        self.read_signals(folder / "signals.txt", folder / "phases.txt")
+        self.readParams(folder / "params.txt")
+        self.readNodes(folder / "nodes.txt")
+        self.readLinks(folder / "links.txt")
+        self.readSignals(folder / "signals.txt", folder / "phases.txt")
 
-        self.read_turning_proportions(folder / "turning_proportions.txt")
-        self.read_demand(folder / "demand.txt")
+        self.readTurningProportions(folder / "turning_proportions.txt")
+        self.readDemand(folder / "demand.txt")
 
         # sort nodes and links by id
-        nodes = [self._nodesmap[i] for i in sorted(self._nodesmap)]
-        links = [self._linksmap[i] for i in sorted(self._linksmap)]
+        nodes = [self.nodesmap[i] for i in sorted(self.nodesmap)]
+        links = [self.linksmap[i] for i in sorted(self.linksmap)]
 
-        self._nodesmap = None
-        self._linksmap = None
+        self.nodesmap = None
+        self.linksmap = None
 
         return Network(name, nodes, links)
 
-    def read_params(self, path) -> None:
+    def readParams(self, path) -> None:
         """Reads the global parameters (dt, duration, jam_density). The first line is a header."""
         try:
             with open(path) as f:
                 f.readline()  # skip the header line
                 tokens = f.read().split()
         except FileNotFoundError:
-            print(f'\tSkipping file "networks/{self._network_name}/params.txt"')
+            print(f'\tSkipping file "networks/{self.network_name}/params.txt"')
             return
 
         for k in range(0, len(tokens) - 1, 2):
@@ -133,56 +133,56 @@ class ReadNetwork:
             elif key.lower() == "jam_density":
                 Params.JAM_DENSITY = value
 
-    def create_node(self, id: int, type: str, longitude: float, latitude: float, elevation: float):
+    def createNode(self, id: int, type: str, longitude: float, latitude: float, elevation: float):
         """Constructs a node with the given parameters. Elevation is in ft."""
         t = type.lower()
-        if t == self.SOURCE:
+        if t == self.SOURCE.lower():
             return Source(id, longitude, latitude, elevation)
-        elif t == self.SINK:
+        elif t == self.SINK.lower():
             return Sink(id, longitude, latitude, elevation)
-        elif t == self.SERIES:
+        elif t == self.SERIES.lower():
             return Series(id, longitude, latitude, elevation)
-        elif t == self.DIVERGE:
+        elif t == self.DIVERGE.lower():
             return Diverge(id, longitude, latitude, elevation)
-        elif t == self.MERGE:
+        elif t == self.MERGE.lower():
             return Merge(id, longitude, latitude, elevation)
-        elif t == self.SIGNAL:
+        elif t == self.SIGNAL.lower():
             return Signal(id, longitude, latitude, elevation)
-        elif t == self.STOP_SIGN:
+        elif t == self.STOP_SIGN.lower():
             return StopSign(id, longitude, latitude, elevation)
-        elif t == self.PED_SIGNAL:
+        elif t == self.PED_SIGNAL.lower():
             return PedSignal(id, longitude, latitude, elevation)
         else:
             raise RuntimeError("Node type not recognized: " + type)
 
-    def create_link(self, id: int, type: str, source, dest, length: float, ffspeed: float,
-                    capacity: float, num_lanes: int):
+    def createLink(self, id: int, type: str, source, dest, length: float, ffspeed: float,
+                    capacity: float, numLanes: int):
         """Constructs a link with the given parameters.
 
         Capacity is in veh/hr. Free flow speed is in mi/hr. Length is in mi.
         """
         t = type.lower()
-        if t == self.CTM:
-            return CTM(id, source, dest, length, ffspeed, capacity, num_lanes)
-        elif t == self.LTM:
-            return LTM(id, source, dest, length, ffspeed, capacity, num_lanes)
-        elif t == self.POINT_QUEUE:
-            return PointQueue(id, source, dest, length, ffspeed, capacity, num_lanes)
-        elif t == self.SPATIAL_QUEUE:
-            return SpatialQueue(id, source, dest, length, ffspeed, capacity, num_lanes)
-        elif t == self.CENTROID_CONNECTOR:
-            return CentroidConnector(id, source, dest, length, ffspeed, capacity, num_lanes)
-        elif t == self.MN:
-            return MN(id, source, dest, length, ffspeed, capacity, num_lanes)
+        if t == self.CTM.lower():
+            return CTM(id, source, dest, length, ffspeed, capacity, numLanes)
+        elif t == self.LTM.lower():
+            return LTM(id, source, dest, length, ffspeed, capacity, numLanes)
+        elif t == self.POINT_QUEUE.lower():
+            return PointQueue(id, source, dest, length, ffspeed, capacity, numLanes)
+        elif t == self.SPATIAL_QUEUE.lower():
+            return SpatialQueue(id, source, dest, length, ffspeed, capacity, numLanes)
+        elif t == self.CENTROID_CONNECTOR.lower():
+            return CentroidConnector(id, source, dest, length, ffspeed, capacity, numLanes)
+        elif t == self.MN.lower():
+            return MN(id, source, dest, length, ffspeed, capacity, numLanes)
         else:
             raise RuntimeError("Link type not recognized: " + type)
 
-    def read_nodes(self, path) -> None:
+    def readNodes(self, path) -> None:
         """Reads all nodes from the specified file. Header data is ignored."""
         try:
             rows = list(_data_rows(path))
         except FileNotFoundError:
-            raise RuntimeError(f'Cannot find file "networks/{self._network_name}/nodes.txt"')
+            raise RuntimeError(f'Cannot find file "networks/{self.network_name}/nodes.txt"')
 
         for _, tok in rows:
             id = int(tok[0])
@@ -191,16 +191,16 @@ class ReadNetwork:
             latitude = float(tok[3])
             elevation = float(tok[4])
 
-            node = self.create_node(id, type, longitude, latitude, elevation)
+            node = self.createNode(id, type, longitude, latitude, elevation)
 
-            self._nodesmap[node.get_id()] = node
+            self.nodesmap[node.getId()] = node
 
-    def read_links(self, path) -> None:
+    def readLinks(self, path) -> None:
         """Reads all links from the specified file. Header data is ignored."""
         try:
             rows = list(_data_rows(path))
         except FileNotFoundError:
-            raise RuntimeError(f'Cannot find file "networks/{self._network_name}/links.txt"')
+            raise RuntimeError(f'Cannot find file "networks/{self.network_name}/links.txt"')
 
         for _, tok in rows:
             id = int(tok[0])
@@ -209,11 +209,11 @@ class ReadNetwork:
             dest_id = int(tok[3])
             length = float(tok[4])
             ffspd = float(tok[5])
-            capacity_per_lane = float(tok[6])
-            num_lanes = int(tok[7])
+            capacityPerLane = float(tok[6])
+            numLanes = int(tok[7])
 
-            source = self._nodesmap.get(source_id)
-            dest = self._nodesmap.get(dest_id)
+            source = self.nodesmap.get(source_id)
+            dest = self.nodesmap.get(dest_id)
 
             if source is None:
                 raise RuntimeError(f"Source node not found: {source_id}")
@@ -221,16 +221,16 @@ class ReadNetwork:
             if dest is None:
                 raise RuntimeError(f"Dest node not found: {dest_id}")
 
-            link = self.create_link(id, type, source, dest, length, ffspd, capacity_per_lane, num_lanes)
+            link = self.createLink(id, type, source, dest, length, ffspd, capacityPerLane, numLanes)
 
-            self._linksmap[link.get_id()] = link
+            self.linksmap[link.getId()] = link
 
-    def read_demand(self, path) -> None:
+    def readDemand(self, path) -> None:
         """Reads the demand (incoming vehicles) from the given file."""
         try:
             rows = list(_data_rows(path))
         except FileNotFoundError:
-            raise RuntimeError(f'Cannot find file "networks/{self._network_name}/demand.txt"')
+            raise RuntimeError(f'Cannot find file "networks/{self.network_name}/demand.txt"')
 
         for _, tok in rows:
             node_id = int(tok[0])
@@ -238,7 +238,7 @@ class ReadNetwork:
             end_time = float(tok[2])
             rate = float(tok[3])
 
-            node = self._nodesmap.get(node_id)
+            node = self.nodesmap.get(node_id)
 
             if node is None:
                 raise RuntimeError(f"Cannot find node {node_id}")
@@ -246,14 +246,14 @@ class ReadNetwork:
             if not isinstance(node, Source):
                 raise RuntimeError(f"Attempting to add demand to non-source node: {node_id}")
 
-            node.add_demand(start_time, end_time, rate)
+            node.addDemand(start_time, end_time, rate)
 
-    def read_turning_proportions(self, path) -> None:
+    def readTurningProportions(self, path) -> None:
         """Reads the turning proportions from the given file."""
         try:
             rows = list(_data_rows(path))
         except FileNotFoundError:
-            print(f'\tSkipping file "networks/{self._network_name}/turning_proportions.txt"')
+            print(f'\tSkipping file "networks/{self.network_name}/turning_proportions.txt"')
             return
 
         for _, tok in rows:
@@ -261,18 +261,18 @@ class ReadNetwork:
             downstream_id = int(tok[1])
             proportion = float(tok[2])
 
-            upstream = self._linksmap.get(upstream_id)
-            downstream = self._linksmap.get(downstream_id)
+            upstream = self.linksmap.get(upstream_id)
+            downstream = self.linksmap.get(downstream_id)
 
             if upstream is None and downstream is None:
                 raise RuntimeError(f"Cannot find link pair: upstream: {upstream_id} downstream: {downstream_id}")
 
             if downstream is not None:
-                downstream.get_source().store_turning_proportion(upstream, downstream, proportion)
+                downstream.getSource().storeTurningProportion(upstream, downstream, proportion)
             else:
-                upstream.get_dest().store_turning_proportion(upstream, downstream, proportion)
+                upstream.getDest().storeTurningProportion(upstream, downstream, proportion)
 
-    def read_signals(self, signals, phases) -> None:
+    def readSignals(self, signals, phases) -> None:
         """Reads the signal cycle data for all nodes.
 
         Note that signal cycle data will only be stored for nodes that are actual signals. Otherwise, it will be ignored.
@@ -282,25 +282,25 @@ class ReadNetwork:
         try:
             rows = list(_data_rows(signals))
         except FileNotFoundError:
-            print(f'\tSkipping file "networks/{self._network_name}/signals.txt"')
+            print(f'\tSkipping file "networks/{self.network_name}/signals.txt"')
             rows = []
 
         for _, tok in rows:
             node_id = int(tok[0])
             offset = float(tok[1])
 
-            node = self._nodesmap.get(node_id)
+            node = self.nodesmap.get(node_id)
 
             if node is None:
                 raise RuntimeError(f"Cannot find node {node_id}")
 
             if isinstance(node, Signal):
-                node.set_offset(offset)
+                node.setOffset(offset)
 
         try:
             rows = list(_data_rows(phases))
         except FileNotFoundError:
-            print(f'\tSkipping file "networks/{self._network_name}/phases.txt"')
+            print(f'\tSkipping file "networks/{self.network_name}/phases.txt"')
             rows = []
 
         for line, _ in rows:
@@ -329,8 +329,8 @@ class ReadNetwork:
                 i_id = int(inc_links[idx].strip())
                 j_id = int(out_links[idx].strip())
 
-                i = self._linksmap.get(i_id)
-                j = self._linksmap.get(j_id)
+                i = self.linksmap.get(i_id)
+                j = self.linksmap.get(j_id)
 
                 if i is None:
                     raise RuntimeError(f"Cannot find link {i_id}")
@@ -340,10 +340,10 @@ class ReadNetwork:
 
                 protected_turns.append((i, j))
 
-            node = self._nodesmap.get(node_id)
+            node = self.nodesmap.get(node_id)
 
             if node is None:
                 raise RuntimeError(f"Cannot find node {node_id}")
 
             if isinstance(node, Signal):
-                node.add_phase(sequence, green, yellow, all_red, protected_turns)
+                node.addPhase(sequence, green, yellow, all_red, protected_turns)

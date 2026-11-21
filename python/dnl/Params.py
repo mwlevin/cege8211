@@ -18,7 +18,7 @@ class Params:
     """The time step, in seconds."""
 
     time = 0
-    """The current time in the network (s). Updated when Network.next_timestep() is called."""
+    """The current time in the network (s). Updated when Network.nextTimestep() is called."""
 
     DURATION = 7200
     """The end time of the simulation, in s. The maximum number of time steps is DURATION/dt."""

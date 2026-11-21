@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from dnl.node.node import Node
-from dnl.params import Params
+from dnl.node.Node import Node
+from dnl.Params import Params
 
 
 class Merge(Node):

@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-from dnl.params import Params
+from dnl.Params import Params
 
 
 class Cell:
@@ -17,25 +17,25 @@ class Cell:
         You may want to add additional parameters here.
         """
         # This is the CTM link that this cell belongs to. Having a reference is useful...
-        self._link = link
+        self.link = link
 
         # Having references to the previous and next cell is probably useful for propagating flow.
         # These are initially None! You have to set these references in class CTM AFTER all the
-        # cells have been constructed. Use set_next_cell(), set_prev_cell() to update these references.
-        self._prev = None
-        self._next = None
+        # cells have been constructed. Use setNextCell(), setPrevCell() to update these references.
+        self.prev = None
+        self.next = None
 
-    def get_occupancy(self):
+    def getOccupancy(self):
         # fill this in
         return 0.0
 
-    def set_next_cell(self, next_cell):
+    def setNextCell(self, next):
         """Update the reference to the next (downstream) cell."""
-        self._next = next_cell
+        self.next = next
 
-    def set_prev_cell(self, prev_cell):
+    def setPrevCell(self, prev):
         """Update the reference to the previous (upstream) cell."""
-        self._prev = prev_cell
+        self.prev = prev
 
     def step(self):
         # fill this in
@@ -45,18 +45,18 @@ class Cell:
         # fill this in
         pass
 
-    def get_sending_flow(self):
+    def getSendingFlow(self):
         # fill this in
         return 0.0
 
-    def get_receiving_flow(self):
+    def getReceivingFlow(self):
         # fill this in
         return 0.0
 
-    def add_flow(self, y):
+    def addFlow(self, y):
         # fill this in
         pass
 
-    def remove_flow(self, y):
+    def removeFlow(self, y):
         # fill this in
         pass
